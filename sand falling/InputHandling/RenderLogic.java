@@ -24,14 +24,7 @@ public class RenderLogic {
         int scaleFactor = simulatorScreen.getScaleFactor();
         int x, y;
 
-        modifiedPixels.sort((p1, p2) -> {
-            int yCompare = Integer.compare(p2.y_cur, p1.y_cur); // Sort by descending y_cur
-            if (yCompare != 0) {
-                return yCompare;
-            }
-            // If y_cur is the same, randomize the order of x_cur within the group
-            return Math.random() < 0.5 ? -1 : 1;
-        });
+        modifiedPixels.sort((p1, p2) -> Integer.compare(p2.y_cur, p1.y_cur));
 
         for (Point point : modifiedPixels) {
             x = point.x_cur;
