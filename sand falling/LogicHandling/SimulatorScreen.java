@@ -71,7 +71,7 @@ public class SimulatorScreen extends JFrame {
     public void AddParticleToPixel(int x, int y, Particle particle) {
         allPixels[getPixelIndex(x / scaleFactor, y / scaleFactor)] = particle;
         renderLogic.markPixelModified(x / scaleFactor, y / scaleFactor, -1, -1);
-        simulatorLogic.setOccupied(y / scaleFactor);
+        simulatorLogic.setOccupied(x / scaleFactor,y / scaleFactor);
     }
 
     public void SwapPixels(int p1, int p2) {
@@ -79,7 +79,7 @@ public class SimulatorScreen extends JFrame {
         allPixels[p2] = allPixels[p1];
         allPixels[p1] = temp;
         renderLogic.markPixelModified(p2 % width_x, p2 / width_x, p1 % width_x, p1 / width_x);
-        simulatorLogic.setOccupied(p2 / width_x);
+        simulatorLogic.setOccupied(p2 % width_x, p2 / width_x);
     }
 
 
@@ -174,16 +174,18 @@ public class SimulatorScreen extends JFrame {
 
             long sleepTime = targetFrameTime - elapsedTime; // Calculate sleep time to achieve target FPS
             if (sleepTime > 0) {
+
                 try {
                     Thread.sleep(sleepTime); // Sleep to achieve desired frame rate
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    throw new RuntimeException(ex);
                 }
+
             }
 
             // Calculate and display actual frame rate
             if (sleepTime < 0)
-            System.out.println(sleepTime);
+                System.out.println(sleepTime);
         });
 
         timer.start();

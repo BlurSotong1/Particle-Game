@@ -12,13 +12,21 @@ public class SimulatorLogic {
 
     public SimulatorLogic (SimulatorScreen screen) {
         simulatorScreen = screen;
-        this.occupied = new boolean[screen.getHeight_y()];
+        this.occupied = new boolean[screen.getHeight_y() * screen.getWidth_x()];
     }
 
-    public void setOccupied(int y) {
-        occupied[y] = true;
-        occupied[y-1] = true;
-        occupied[y-2] = true;
+    public void setOccupied(int x, int y) {
+        int width = simulatorScreen.getWidth_x();
+        occupied[y * width + x] = true;
+
+        for (int i = (y-1) * width + x - 1; i <= (y-1) * width + x + 1; i++) {
+            occupied[i] = true;
+        }
+
+        for (int i = (y-2) * width + x - 2; i <= (y-2) * width + x + 2; i++) {
+            occupied[i] = true;
+        }
+
     }
 
 
@@ -43,8 +51,8 @@ public class SimulatorLogic {
                         int drawY = centerY + y;
 
                         if (simulatorScreen.isEmptyPixelForCursor(drawX, drawY)) {
-                            rand = random.nextInt(1, 500);
-                            if (rand > 495) {
+                            rand = random.nextInt(1, 10);
+                            if (rand > 8) {
                                 simulatorScreen.AddParticleToPixel(drawX, drawY, particle);
 
                             }
@@ -54,8 +62,6 @@ public class SimulatorLogic {
                 }
             }
         }
-
-
     }
 
 
@@ -75,8 +81,6 @@ public class SimulatorLogic {
 
         Random random = new Random();
         for (int k = (simulatorScreen.getHeight_y()-2); k >= 3; k--) {
-            if (!occupied[k]) continue;
-            occupied[k] = false;
 
             if (random.nextBoolean()) {
                 starting = 0;
@@ -91,28 +95,49 @@ public class SimulatorLogic {
             for (int j = starting; j != maxOrMin; j+= counter) {
                 i = k * simulatorScreen.getWidth_x() + j;
 
+                if (!occupied[i]) continue;
+
+                occupied[i] = false;
+
                 if (allPixels[i] != null) {
+                    int changingCoordinates = i;
+                    final float velocity = allPixels[i].getVelocity();
 
-                    below = i + simulatorScreen.getWidth_x();
-                    belowRight = i + simulatorScreen.getWidth_x() + 1;
-                    belowLeft = i + simulatorScreen.getWidth_x() - 1;
+                    for (int x = 0; x < velocity; x++) {
+                        below = changingCoordinates + simulatorScreen.getWidth_x();
+                        belowRight = changingCoordinates + simulatorScreen.getWidth_x() + 1;
+                        belowLeft = changingCoordinates + simulatorScreen.getWidth_x() - 1;
 
-                    if (simulatorScreen.isEmptyPixel(below)) {
-                        simulatorScreen.SwapPixels(i,below);
+
+                        if (simulatorScreen.isEmptyPixel(below)) {
+
+                            simulatorScreen.SwapPixels(changingCoordinates,below);
+
+                            changingCoordinates = below;
+                            allPixels[changingCoordinates].increaseVelocity();
+                        }
+
+
+                        else if (simulatorScreen.isEmptyPixel(belowLeft)
+                                && changingCoordinates % simulatorScreen.getWidth_x() != 0) {
+
+                            simulatorScreen.SwapPixels(changingCoordinates,belowLeft);
+                            changingCoordinates = belowLeft;
+                            allPixels[changingCoordinates].increaseVelocity();
+                        }
+
+                        //left was not empty
+                        else if (simulatorScreen.isEmptyPixel(belowRight)
+                                && changingCoordinates % simulatorScreen.getWidth_x() != simulatorScreen.getWidth_x() -1) {
+                            simulatorScreen.SwapPixels(changingCoordinates,belowRight);
+
+                            changingCoordinates = belowRight;
+                            allPixels[changingCoordinates].increaseVelocity();
+                        } else {
+                            allPixels[changingCoordinates].dampenVelocity();
+                            break;
+                        }
                     }
-
-
-                    else if (simulatorScreen.isEmptyPixel(belowLeft)
-                            && i % simulatorScreen.getWidth_x() != 0) {
-
-                        simulatorScreen.SwapPixels(i,belowLeft);
-                    }
-                    //left was not empty
-                    else if (simulatorScreen.isEmptyPixel(belowRight)
-                            && i % simulatorScreen.getWidth_x() != simulatorScreen.getWidth_x() -1) {
-                        simulatorScreen.SwapPixels(i,belowRight);
-                    }
-
                 }
             }
         }
