@@ -24,34 +24,38 @@ public class SimulatorLogic {
 
     public void drawCircularParticles(int centerX, int centerY,
                                       Particle particle, int radius) {
-        Random random = new Random();
-        centerX -= 1;
-        centerY += 21;
 
-        radius *= simulatorScreen.getScaleFactor()
-        ;
+        if (simulatorScreen.isEmptyPixelForCursor(centerX,centerY)) {
+            Random random = new Random();
+            centerX -= 1;
+            centerY += 21;
 
-        int rand;
-        for (int x = -radius; x < radius; x++) {
+            radius *= simulatorScreen.getScaleFactor();
 
-            for (int y = -radius; y < radius; y++) {
+            int rand;
+            for (int x = -radius; x < radius; x++) {
 
-                if (x * x + y * y <= radius * radius) {
-                    // Check if (x,y) is within the circle
-                    int drawX = centerX + x;
-                    int drawY = centerY + y;
+                for (int y = -radius; y < radius; y++) {
 
-                    if (simulatorScreen.isEmptyPixelForCursor(drawX, drawY)) {
-                        rand = random.nextInt(1,500);
-                        if (rand > 495) {
-                            simulatorScreen.AddParticleToPixel(drawX, drawY, particle);
+                    if (x * x + y * y <= radius * radius) {
+                        // Check if (x,y) is within the circle
+                        int drawX = centerX + x;
+                        int drawY = centerY + y;
+
+                        if (simulatorScreen.isEmptyPixelForCursor(drawX, drawY)) {
+                            rand = random.nextInt(1, 500);
+                            if (rand > 495) {
+                                simulatorScreen.AddParticleToPixel(drawX, drawY, particle);
+
+                            }
 
                         }
-
                     }
                 }
             }
         }
+
+
     }
 
 
@@ -70,7 +74,7 @@ public class SimulatorLogic {
 
 
         Random random = new Random();
-        for (int k = (simulatorScreen.getHeight_y()-2); k >= 2; k--) {
+        for (int k = (simulatorScreen.getHeight_y()-2); k >= 3; k--) {
             if (!occupied[k]) continue;
             occupied[k] = false;
 

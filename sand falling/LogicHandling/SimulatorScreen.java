@@ -100,19 +100,16 @@ public class SimulatorScreen extends JFrame {
      * @return true if null pixel
      */
     public boolean isEmptyPixelForCursor(int x, int y) {
-        if (x > maxDimensions()[0]
-                || x < 0
-                || y < 0
-                || y > maxDimensions()[1])
+        if (x > maxDimensions()[0] - 3
+                || x <= 3
+                || y <= 3
+                || y > maxDimensions()[1] - 3)
             return false;
 
-        try {
-            return allPixels[
-                    getPixelIndex(x / scaleFactor, y / scaleFactor)
-                    ] == null;
-        } catch (Exception e) {
-            return false;
-        }
+
+        return allPixels[
+                getPixelIndex(x / scaleFactor, y / scaleFactor)
+                ] == null;
 
     }
 
@@ -162,7 +159,8 @@ public class SimulatorScreen extends JFrame {
         /*
          * timer for 45 fps
          */
-        // 45 fps
+        // 45
+        // fps
         int targetFPS = 45; // Adjust target frame rate as needed
         long targetFrameTime = 1000 / targetFPS; // Target time per frame in milliseconds
 
