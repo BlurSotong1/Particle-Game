@@ -29,8 +29,8 @@ public class RenderLogic {
 
         for (Coordinates coordinates : modifiedPixels) {
 
-            x = coordinates.getX_cur();
-            y = coordinates.getY_cur();
+            x = coordinates.x_cur();
+            y = coordinates.y_cur();
 
             g.setColor(simulatorScreen.getParticleColour(x, y));
             g.fillRect(x * scaleFactor, y * scaleFactor, scaleFactor, scaleFactor);

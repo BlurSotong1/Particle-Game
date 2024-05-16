@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 
 public class KeyboardHandler implements KeyListener {
 
-    private SimulatorLogic simulatorLogic;
+    private final SimulatorLogic simulatorLogic;
 
     public KeyboardHandler(SimulatorLogic simulatorLogic) {
         this.simulatorLogic = simulatorLogic;
