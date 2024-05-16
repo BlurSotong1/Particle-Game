@@ -14,7 +14,9 @@ This project is a sand falling simulator implemented in Java. It simulates the b
 - `SimulatorLogic`: Implements the core logic for simulating particle behavior, including particle movement, collision detection, and interaction with the environment.
 - `RenderLogic`: Handles the rendering of modified pixels on the screen, optimizing rendering performance by updating only the pixels that have changed.
 - `Coordinates`: Represents a set of coordinates used to mark modified pixels for rendering.
-- `Particle Package`: Contains implementations of different particle types, such as `SandParticle`, each with unique properties and behavior.
+- `Particle Package`: Contains implementations of different particle types, such as `SandParticle`, each with unique properties and Colour.
+
+  
 - `MouseHandler`: Handles mouse input, allowing users to draw particles by clicking and dragging the mouse.
 - `KeyboardHandler`: Handles keyboard input, providing shortcuts for clearing the screen or performing other actions.
 - `Direction`: Enumerates different directions for particle movement or other actions.
@@ -23,8 +25,10 @@ This project is a sand falling simulator implemented in Java. It simulates the b
 To run the sand falling simulator:
 1. Clone the repository to your local machine.
 2. Compile the Java source files.
-3. Run the main application class (`SandFallingSimulator.java` or similar).
+3. Run the main application class (`MainAPP.java`).
 4. Interact with the GUI to observe and control the simulation.
+5. Mouse input places sand. 
+6. Pressing SpaceBar clears the screen.
 
 ## Dependencies
 - Java Development Kit (JDK): Requires JDK to compile and run the Java source code.
@@ -36,7 +40,6 @@ To run the sand falling simulator:
 - Particle Interactions: Implement interactions between different types of particles, such as collisions, reactions, or fluid dynamics.
 - User Interface Enhancements: Improve the user interface with additional features, controls, and visualizations.
 - Double Buffering: Implement double buffering to improve rendering smoothness and reduce flickering.
-- Timer Optimization: Optimize timer usage for smoother frame rates and more consistent simulation speed.
 
 ## Contributing
 Contributions to the sand falling simulator project are welcome! Feel free to submit bug reports, feature requests, or pull requests to help improve the simulator.
