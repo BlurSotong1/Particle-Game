@@ -1,39 +1,36 @@
-package InputHandling;
+package LogicHandling;
 
+import InputHandling.KeyboardHandler;
+import InputHandling.MouseHandler;
 import Particles.Particle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class SimulatorScreen extends JFrame {
     /**
      * width of the window im creating
      */
-    private int width_x = 0;
+    private final int width_x;
 
     /**
      * similarly, height of the interactive window
      */
-    private int height_y = 0;
+    private final int height_y;
 
     /**
      * holds all pixels information.
      */
-    private Particle[] allPixels;
+    private final Particle[] allPixels;
     /**
      * scale factor of making each pixel bigger
      */
-    private int scaleFactor;
-    /**
-     * calculate how long one frame takes
-     */
-    private long frameTime;
+    private final int scaleFactor;
+
     /**
      * Renderer logic to call when drawing
      */
-    private RenderLogic renderLogic;
+    private final RenderLogic renderLogic;
 
     SimulatorLogic simulatorLogic;
 
@@ -59,7 +56,7 @@ public class SimulatorScreen extends JFrame {
     /**
      * Clears the screen, resetting everything back to white, by setting all particles to null.
      */
-    protected void clearScreen() {
+    public void clearScreen() {
         for (int i = 0; i < width_x * height_y; i++) {
             if (allPixels[i] != null) {
                 allPixels[i] = null;
@@ -71,15 +68,18 @@ public class SimulatorScreen extends JFrame {
     /**
      * call this function to place the particle on that pixel
      */
-    protected void addParticle(int x, int y, Particle particle) {
+    public void AddParticleToPixel(int x, int y, Particle particle) {
         allPixels[getPixelIndex(x / scaleFactor, y / scaleFactor)] = particle;
         renderLogic.markPixelModified(x / scaleFactor, y / scaleFactor, -1, -1);
+        simulatorLogic.setOccupied(y / scaleFactor);
     }
 
-    protected void swap(int p1, int p2) {
+    public void SwapPixels(int p1, int p2) {
+        final Particle temp = allPixels[p2];
         allPixels[p2] = allPixels[p1];
-        allPixels[p1] = null;
+        allPixels[p1] = temp;
         renderLogic.markPixelModified(p2 % width_x, p2 / width_x, p1 % width_x, p1 / width_x);
+        simulatorLogic.setOccupied(p2 / width_x);
     }
 
 
@@ -95,38 +95,36 @@ public class SimulatorScreen extends JFrame {
     /**
      * checks if that pixel is null.
      *
-     * @param x is the x coordinates
-     * @param y is the y coordinates
+     * @param x is the x coordinates of cursor -> divide by scale factor to get true pixel index
+     * @param y is the y coordinates -> divide by scale factor to get true pixel index
      * @return true if null pixel
      */
-    protected boolean isEmptyPixelForCursor(int x, int y) {
-        if (x > maxDimensions()[0] || x < 0 || y < 0 || y > maxDimensions()[1]) return false;
+    public boolean isEmptyPixelForCursor(int x, int y) {
+        if (x > maxDimensions()[0]
+                || x < 0
+                || y < 0
+                || y > maxDimensions()[1])
+            return false;
 
         try {
-            if (allPixels[getPixelIndex(x / scaleFactor, y / scaleFactor)] == null) {
-                return true;
-            }
-            return false;
+            return allPixels[
+                    getPixelIndex(x / scaleFactor, y / scaleFactor)
+                    ] == null;
         } catch (Exception e) {
             return false;
         }
 
     }
 
-    protected boolean isEmpty(int index) {
+    public boolean isEmptyPixel(int index) {
         if (index >= width_x * height_y || index < 0) return false;
-        if (allPixels[index] == null) return true;
-        return false;
+        return allPixels[index] == null;
     }
-
 
     protected int getPixelIndex(int x, int y) {
         return y * width_x + x;
     }
 
-    protected void clearPixel(int x, int y) {
-        allPixels[getPixelIndex(x, y)] = null;
-    }
 
     private void startSimulation() {
         setTitle("Interactive Window");
@@ -138,7 +136,6 @@ public class SimulatorScreen extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
 
                 for (int y = 0; y < height_y; y++) {
                     for (int x = 0; x < width_x; x++) {
@@ -162,16 +159,33 @@ public class SimulatorScreen extends JFrame {
         getContentPane().add(panel);
         setVisible(true);
 
-        /**
+        /*
          * timer for x fps
          */
-        // 100 fps
-        int frameDelay = 1000 / 60;
-        Timer timer = new Timer(frameDelay, e -> {
+        // 60 fps
+        int targetFPS = 45; // Adjust target frame rate as needed
+        long targetFrameTime = 1000 / targetFPS; // Target time per frame in milliseconds
 
+
+        Timer timer = new Timer(0, e -> {
+            long startTime = System.currentTimeMillis(); // Record start time
             simulatorLogic.updateParticles();
-            renderLogic.updateModifiedPixels(panel.getGraphics());
+            renderLogic.updateModifiedPixels(getGraphics());
+            long endTime = System.currentTimeMillis(); // Record end time
+            long elapsedTime = endTime - startTime; // Calculate elapsed time
 
+            long sleepTime = targetFrameTime - elapsedTime; // Calculate sleep time to achieve target FPS
+            if (sleepTime > 0) {
+                try {
+                    Thread.sleep(sleepTime); // Sleep to achieve desired frame rate
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            // Calculate and display actual frame rate
+            if (sleepTime < 0)
+            System.out.println(sleepTime);
         });
 
         timer.start();
@@ -185,15 +199,15 @@ public class SimulatorScreen extends JFrame {
         return max;
     }
 
-    protected int getHeight_y() {
+    public int getHeight_y() {
         return height_y;
     }
 
-    protected int getWidth_x() {
+    public int getWidth_x() {
         return width_x;
     }
 
-    protected Particle[] getAllPixels() {
+    public Particle[] getAllPixels() {
         return allPixels;
     }
 
@@ -201,4 +215,5 @@ public class SimulatorScreen extends JFrame {
     public int getScaleFactor() {
         return scaleFactor;
     }
+
 }

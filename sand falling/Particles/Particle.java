@@ -4,15 +4,8 @@ import java.awt.*;
 
 public interface Particle {
 
-    int[] coordinates = new int[2];
-    Color colour = null;
+     Color getRandomColour();
+     Color getParticleColour();
 
-    public void createParticle (int x, int y);
-    public Color getRandomColour();
-    public Color getParticleColour();
-    public boolean isParticleSettled();
-    public void updateSettled();
-    public int[] getCoordinates();
-    public void setCoordinates(int[] coordinates);
 
 }
