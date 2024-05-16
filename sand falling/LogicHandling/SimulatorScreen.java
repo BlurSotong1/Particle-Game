@@ -160,9 +160,9 @@ public class SimulatorScreen extends JFrame {
         setVisible(true);
 
         /*
-         * timer for x fps
+         * timer for 45 fps
          */
-        // 60 fps
+        // 45 fps
         int targetFPS = 45; // Adjust target frame rate as needed
         long targetFrameTime = 1000 / targetFPS; // Target time per frame in milliseconds
 
