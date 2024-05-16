@@ -1,16 +1,12 @@
 package InputHandling;
 
 import LogicHandling.SimulatorLogic;
-import Particles.SandParticle;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MouseHandler extends MouseAdapter {
@@ -20,10 +16,11 @@ public class MouseHandler extends MouseAdapter {
     private boolean isMousePressed = false;
     private final SimulatorLogic simulatorLogic;
 
-    private static final int radius = 5;
+    private final int radius;
 
     public MouseHandler(SimulatorLogic simulatorLogic) {
         this.simulatorLogic = simulatorLogic;
+        radius = simulatorLogic.getRadius();
     }
 
     @Override
@@ -40,7 +37,7 @@ public class MouseHandler extends MouseAdapter {
                     SwingUtilities.convertPointFromScreen(mouseLocation, e.getComponent());
                     currentCoordinates[0] = mouseLocation.x;
                     currentCoordinates[1] = mouseLocation.y;
-                    simulatorLogic.drawCircularParticles(currentCoordinates[0], currentCoordinates[1], new SandParticle(), radius);
+                    simulatorLogic.drawCircularParticles(currentCoordinates[0], currentCoordinates[1], radius);
                 }
             });
 

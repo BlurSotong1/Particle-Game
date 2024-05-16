@@ -1,37 +1,41 @@
 package LogicHandling;
 
 import Particles.Particle;
+import Particles.SandParticle;
 
 import java.util.Random;
 
 public class SimulatorLogic {
 
     private final SimulatorScreen simulatorScreen;
+
     private final boolean[] occupied;
 
 
     public SimulatorLogic (SimulatorScreen screen) {
         simulatorScreen = screen;
         this.occupied = new boolean[screen.getHeight_y() * screen.getWidth_x()];
+        SandParticle.setMaxVelocity(8.0f);
+
     }
 
     public void setOccupied(int x, int y) {
         int width = simulatorScreen.getWidth_x();
         occupied[y * width + x] = true;
 
-        for (int i = (y-1) * width + x - 1; i <= (y-1) * width + x + 1; i++) {
-            occupied[i] = true;
-        }
+        occupied[(y-1) * width + x - 1] = true;
+        occupied[(y-1) * width + x    ] = true;
+        occupied[(y-1) * width + x + 1] = true;
 
-        for (int i = (y-2) * width + x - 2; i <= (y-2) * width + x + 2; i++) {
-            occupied[i] = true;
-        }
+        occupied[(y-2) * width + x - 2] = true;
+        occupied[(y-2) * width + x - 1] = true;
+        occupied[(y-2) * width + x + 1] = true;
+        occupied[(y-2) * width + x + 2] = true;
 
     }
 
 
-    public void drawCircularParticles(int centerX, int centerY,
-                                      Particle particle, int radius) {
+    public void drawCircularParticles(int centerX, int centerY, int radius) {
 
         if (simulatorScreen.isEmptyPixelForCursor(centerX,centerY)) {
             Random random = new Random();
@@ -53,7 +57,7 @@ public class SimulatorLogic {
                         if (simulatorScreen.isEmptyPixelForCursor(drawX, drawY)) {
                             rand = random.nextInt(1, 10);
                             if (rand > 8) {
-                                simulatorScreen.AddParticleToPixel(drawX, drawY, particle);
+                                simulatorScreen.AddParticleToPixel(drawX, drawY, new SandParticle());
 
                             }
 
@@ -149,6 +153,13 @@ public class SimulatorLogic {
     public void clearScreen() {
         simulatorScreen.clearScreen();
     }
+
+    public int getRadius () {
+
+        return ((simulatorScreen.getHeight_y() + simulatorScreen.getWidth_x()) / 2)
+                / 100 * (10 - simulatorScreen.getScaleFactor());
+    }
+
 
 }
 
