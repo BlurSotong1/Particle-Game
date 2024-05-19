@@ -30,7 +30,7 @@ public class MouseHandler extends MouseAdapter {
             currentCoordinates[0] = e.getX();
             currentCoordinates[1] = e.getY();
 
-            activeTimer = new Timer(25, evt -> {
+            activeTimer = new Timer(33, evt -> {
                 if (isMousePressed) {
                     // Update current coordinates within the timer action
                     Point mouseLocation = MouseInfo.getPointerInfo().getLocation();

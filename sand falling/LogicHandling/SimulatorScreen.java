@@ -45,8 +45,9 @@ public class SimulatorScreen extends JFrame {
         this.height_y = height_y;
         this.scaleFactor = scaleFactor;
         allPixels = new Particle[width_x * height_y];
-        simulatorLogic = new SimulatorLogic(this);
         renderLogic = new RenderLogic(this);
+        simulatorLogic = new SimulatorLogic(this, renderLogic);
+
         clearScreen();
         startSimulation();
 
@@ -71,7 +72,7 @@ public class SimulatorScreen extends JFrame {
     public void AddParticleToPixel(int x, int y, Particle particle) {
         allPixels[getPixelIndex(x / scaleFactor, y / scaleFactor)] = particle;
         renderLogic.markPixelModified(x / scaleFactor, y / scaleFactor, -1, -1);
-        simulatorLogic.setOccupied(x / scaleFactor,y / scaleFactor);
+        simulatorLogic.needsUpdate(x / scaleFactor,y / scaleFactor);
     }
 
     public void SwapPixels(int p1, int p2) {
@@ -79,7 +80,7 @@ public class SimulatorScreen extends JFrame {
         allPixels[p2] = allPixels[p1];
         allPixels[p1] = temp;
         renderLogic.markPixelModified(p2 % width_x, p2 / width_x, p1 % width_x, p1 / width_x);
-        simulatorLogic.setOccupied(p2 % width_x, p2 / width_x);
+        simulatorLogic.needsUpdate(p2 % width_x, p2 / width_x);
     }
 
 
@@ -129,6 +130,46 @@ public class SimulatorScreen extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create a custom JPanel to render pixels (override paintComponent method)
+        JPanel panel = getjPanel();
+
+        getContentPane().add(panel);
+        setVisible(true);
+
+        /*
+         * timer for 45 fps
+         */
+        // 45
+        // fps
+        int targetFPS = 45; // Adjust target frame rate as needed
+        long targetFrameTime = 1000 / targetFPS; // Target time per frame in milliseconds
+
+
+        Timer timer = new Timer(0, e -> {
+            long startTime = System.currentTimeMillis(); // Record start time
+            simulatorLogic.updateParticles();
+            long endTime = System.currentTimeMillis(); // Record end time
+            long elapsedTime = endTime - startTime; // Calculate elapsed time
+
+            long sleepTime = targetFrameTime - elapsedTime; // Calculate sleep time to achieve target FPS
+            if (sleepTime > 0) {
+
+                try {
+                    Thread.sleep(sleepTime); // Sleep to achieve desired frame rate
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+
+            // Calculate and display actual frame rate
+            if (sleepTime < 0)
+                System.out.println(sleepTime);
+        });
+
+        timer.start();
+    }
+
+    private JPanel getjPanel() {
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -152,43 +193,7 @@ public class SimulatorScreen extends JFrame {
         KeyboardHandler keyboardHandler = new KeyboardHandler(simulatorLogic);
         panel.setFocusable(true); // Ensure that the panel can receive keyboard events
         panel.addKeyListener(keyboardHandler);
-
-        getContentPane().add(panel);
-        setVisible(true);
-
-        /*
-         * timer for 45 fps
-         */
-        // 45
-        // fps
-        int targetFPS = 45; // Adjust target frame rate as needed
-        long targetFrameTime = 1000 / targetFPS; // Target time per frame in milliseconds
-
-
-        Timer timer = new Timer(0, e -> {
-            long startTime = System.currentTimeMillis(); // Record start time
-            simulatorLogic.updateParticles();
-            renderLogic.updateModifiedPixels(getGraphics());
-            long endTime = System.currentTimeMillis(); // Record end time
-            long elapsedTime = endTime - startTime; // Calculate elapsed time
-
-            long sleepTime = targetFrameTime - elapsedTime; // Calculate sleep time to achieve target FPS
-            if (sleepTime > 0) {
-
-                try {
-                    Thread.sleep(sleepTime); // Sleep to achieve desired frame rate
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-            }
-
-            // Calculate and display actual frame rate
-            if (sleepTime < 0)
-                System.out.println(sleepTime);
-        });
-
-        timer.start();
+        return panel;
     }
 
 

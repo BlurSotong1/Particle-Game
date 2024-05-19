@@ -7,11 +7,9 @@ public class SandParticle implements Particle{
 
 
     final private Color colour = getRandomColour();
-    private float velocity = 1;
+    private float velocity = 0;
 
     private static float maxVelocity;
-
-    private float acceleration = 0.2f;
 
     public SandParticle () {
     }
@@ -38,19 +36,15 @@ public class SandParticle implements Particle{
 
     public void increaseVelocity () {
         if (velocity <= maxVelocity) {
-            velocity += acceleration;
-            acceleration += 0.05f;
+            velocity += 0.8f;
         }
 
     }
 
     public void dampenVelocity () {
-        if (velocity >= 2)
-            velocity /= 1.5f;
-        else
-            velocity = 1;
 
-        acceleration = 0.2f;
+            velocity *= 0.5f;
+
     }
 
     public static void setMaxVelocity (float maxVelocity) {

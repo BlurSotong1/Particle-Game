@@ -26,7 +26,6 @@ public class RenderLogic {
         int x, y;
 
 
-
         for (Coordinates coordinates : modifiedPixels) {
 
             x = coordinates.x_cur();
