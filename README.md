@@ -37,7 +37,8 @@ To run the sand falling simulator:
 ## Future Improvements (updated)
 - Performance Optimization: Investigate and optimize rendering and simulation logic to improve performance and frame rate.
   - Have optimised rendering through only updating particles by keeping track of changes made.
-
+- Fix the left bias
+  - identified why the left bias occurred and fixed it through bias handling by randomising which direction the logic handling goes from
 
 
 ## License
