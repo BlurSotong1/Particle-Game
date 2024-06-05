@@ -39,6 +39,8 @@ To run the sand falling simulator:
   - Have optimised rendering through only updating particles by keeping track of changes made.
 - Fix the left bias
   - identified why the left bias occurred and fixed it through bias handling by randomising which direction the logic handling goes from
+- Adding acceleration
+  - added acceleration by updating the particle multiple times in 1 frame, which is also decided by its attribute: velocity
 
 
 ## License
