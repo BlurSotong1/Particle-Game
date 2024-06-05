@@ -34,15 +34,11 @@ To run the sand falling simulator:
 - Java Development Kit (JDK): Requires JDK to compile and run the Java source code.
 - Java Swing: Utilizes Java Swing for creating the graphical user interface and rendering the simulation.
 
-## Future Improvements
+## Future Improvements (updated)
 - Performance Optimization: Investigate and optimize rendering and simulation logic to improve performance and frame rate.
-- Additional Particle Types: Add more particle types to enhance the simulation, such as water, lava, or gas particles, each with unique properties and behavior.
-- Particle Interactions: Implement interactions between different types of particles, such as collisions, reactions, or fluid dynamics.
-- User Interface Enhancements: Improve the user interface with additional features, controls, and visualizations.
-- Double Buffering: Implement double buffering to improve rendering smoothness and reduce flickering.
+  - Have optimised rendering through only updating particles by keeping track of changes made.
 
-## Contributing
-Contributions to the sand falling simulator project are welcome! Feel free to submit bug reports, feature requests, or pull requests to help improve the simulator.
+
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
